@@ -1,0 +1,42 @@
+# Current and future developments #
+
+Some notes on work and plans for future work on BEAST.
+
+## Relaxed Clocks ##
+  * Random Local Clocks - finishing up.
+  * Uncorrelated Relaxed clocks - this needs work to improve the anti-correlation tendency with small trees. I wonder if we could sample rates independently from the prior distribution (the lognormal, gamma etc) and then have an additional prior which enforces a spread of samples across the distribution?
+    * We just need to allow a particular rate category to have 0 or more branches assigned to it rather than exactly one, and increase the number of categories. Michael Defoin Platel (MDP) has already done both of these things and is writing it up with AJD.
+  * Auto-correlated relaxed clocks - Need to get these up and running to compete with MrBayes. Do the issues about the root still need resolving?
+    * We (MDP and AJD) have gotten the auto-correlated models working. It was not just the root that was the problem - but the best solution at the root in our opinion is to set the root rate to be equal to one of the child rates as Thorne et al does. We have implemented the Thorne et al model with the addition of being able to sample the tree and are writing up a paper that compares this model to (improved) uncorrelated model. Rannala and Yang have already done this but without sampling the trees.
+
+## Birth-Death models ##
+  * Nee et al: Removed, Formula tested and is incorrect
+  * Some development of Rannala & Yang - Birth, Death & sampling? Removed, Formula tested and is incorrect
+  * Added Gernhard 2008: tested and working. (JH)
+
+## Population history models ##
+  * New variable dimension Bayesian skyline plot by Joseph Heled (JH) and AJD (handles multiple loci) - submitted to BMC Evolutionary Biology
+  * Gaussian Markov random field - Marc's group
+
+## Continuous models ##
+  * Multivariate diffusion models - Marc & Philippe (MAS and AJD have submitted a preliminary application for funding for this project -- anybody else interested if we get to the second round?)
+  * Visualization - DensityPlotter & new GoogleEarth exporter.
+
+## Structured Coalescent ##
+  * The proposal distribution generator had became very slow, negating the efficiency of the overall technique. Perhaps it would be possible to integrate Marc's discrete model as a proposal distribution? Our interesting example data set (HIV risk groups) was unpublished data which is no longer available to us.
+
+## Recombination ##
+  * Ancestral Recombination Graphs - Erik & Marc -- It's working (finally)!!!
+
+## Parallelization ##
+  * Multi-threaded MCMCMC is implemented. Needs some tests to find some recommended settings and conditions where it is more efficient than running independent chains. Given the prevalence of 4 and 8 core machines, I suggest that there would be little to gain for taking this beyond multi-threading (i.e., MPI).
+    * For a number of reasons, please benchmark an n-way MC<sup>3</sup> against n-way MC<sup>3</sup> with zero temperature difference.  The MC<sup>3</sup> w/ zero temp difference could improve a number of things, such as the number of trees in a 95% confidence interval, the burnin time of the hottest chain, the quality of estimates, etc. without the results really being attributable to MC<sup>3</sup>.  Also, there is a paper in which deltaT=0 is the optimal setting for MrBayes on some data sets.(BenRI)
+  * Multi-threaded Likelihood evaluation is implemented - this uses threads to calculate the likelihood by partition of the alignment. Assessment required of performance.
+  * MPI threading. Marc has implemented this in his ARG branch. This is used for distributing large numbers of independent likelihood evaluations.
+
+## New Substitution Models ##
+  * Selection bias - Alex & Marc are done with corrections to the tree likelihood calculator to account for selection bias in the observed site patterns. (AVA)
+  * Generalized Dollo and Wagner framework - Alex & Marc are finished with a substitution model that embeds a continuous-time Markov chain within a trait birth-death process to describe multi-state Dollo-like trait development. See ALSTreeLikelihood. (AVA)
+
+## Likelihood summaries ##
+  * Alex is working on NodePosteriorTreeLikelihood that provides P(n=i|Y,...) probability that internal node n is in state i given the labels of the tips Y.

@@ -1,0 +1,80 @@
+# Dependencies #
+
+Try to avoid circular dependencies between packages. Certain packages are intended as global utility classes (feel free to add stuff to them but consider whether they may be useful to other classes):
+
+  * _dr.maths_ / _dr.stats_ / _dr.utils_ are low level utility packages and should have no dependencies on the packages below...
+
+  * _dr.inference_ is generic MCMC stuff and should have no dependencies on the biological packages (_dr.evolution_ & _dr.evomodel_). Notably, things like priors, operators and the like here are generic ones that work on continuous parameters not biology specific ones.
+
+  * _dr.evolution_ is basic evolutionary stuff and should have no dependencies on dr.evomodel or dr.inference.
+
+  * _dr.evomodel_ is where all BEAST-specific stuff should go  - this ties together the biology in dr.evolution into the inference engine in _dr.inference_.
+
+# 'Plugins' #
+  * If you are creating a 'package' of classes that do some particular models (may include some Models, Likelihoods, Operators and the like) I suggest creating a package in dr.evomodel to put it all in. I envisage that at some point we will move to a 'plugin' type architecture where developers can create independent JAR files for downloading, within which BEAST would search for parsers. This would allow independent distribution of particular models and analyses. I suggest people try and compartmentalize their models a bit rather than dropping classes in all over the place. I suggest this may be a good idea for packages which are of less general interest (i.e., aren't simply natural extensions to the core BEAST functionality).
+
+  * An example of this is _dr.evomodel.transmission_ which contains a package of classes for analysing transmission histories for infectious diseases.
+
+  * The advantages of this is that once we have a plugin architecture, bug fixes and improvements of models will be able to be distributed independently of BEAST.
+
+# 'Parsers Loading Regulations' #
+
+  * Please review release\_parser.properties, and please MOVE any parser not ready for release into development\_parser.properties.
+
+  * To solve release parsers out of date problem, I made 3 changes for loading parsers:
+
+1) Always load release\_parser.properties;
+
+2) development\_parser.properties should contain additional parsers only available for development, which should NOT duplicate with release parsers;
+
+3) add WARNING message to check the duplication of parser loading.
+
+  * From now, any parser not ready for release should stay in development\_parser.properties. Once it is ready for release, it should be moved into release\_parser.properties.
+
+  * I suggest to move all parsers in BeastParser into release\_parser.properties in next stage.
+
+# 'SVN Changes Regarding Development and Release' #
+
+We recently create the Branch 1.5 for BEAST, and we will only release the code in Branch 1.5 not Trunk from next release 1.5.3. The trunk will be used for development only. Therefore, any bug fixing will require to check in to the branch, and I will merge branch and trunk when major version updating, such as 1.6, 1.7 ...
+
+To work on Branch 1.5, it is simply to create a new project (e.g. BEAST1.5) and check out code from /branches/1.5/ like what you did for trunk, and then work on this project as same as you are working on the trunk.
+
+Branch 1.5 is for bug fixing and is the release version, but trunk is only for development which is not showing in the release. I will merge branch 1.5 into trunk after each release.
+
+# 'Developer rules regarding adding a new parser' #
+
+1) Any parser has to be implemented by an individual java class
+extended from _AbstractXMLObjectParser_ and named by model name +
+Parser. If there are multi-parsers referring to one model class, they can be included in one parser class and each parser has its own inner class extended from AbstractXMLObjectParser.
+
+For example, _dr.evomodel.tree.TreeModel_ has
+_dr.evomodelxml.tree.TreeModelParser_. Or dr.evomodel.operators.ExchangeOperator has parser class dr.evomodelxml.operators.ExchangeOperatorParser, and the latter contains 2 parsers inner classes NARROW\_EXCHANGE\_OPERATOR\_PARSER and WIDE\_EXCHANGE\_OPERATOR\_PARSER.
+
+
+2) getReturnType() has to return the exact class of the model referred
+by this parser, if you want it belongs some general types, you need to
+use inheritance.
+
+For example,
+_dr.evomodelxml.treelikelihood.TreeLikelihoodParser.getReturnType()_
+should return _TreeLikelihood_, if you want it belongs to _Likelihood_,
+you need to inherit _TreeLikelihood_ from Likelihood.
+
+3) For any string used for xml elements or attributes, please declare
+them as public static final String variable in the ????Parser class,
+please do not write string as "???" anywhere in the code.
+
+For example, public static final String ROOT\_HEIGHT = "rootHeight";
+
+4) The parser class has to be located as described in _\release\common
+\doc\PackageStructure.pdf_ in repository, or _\doc\PackageStructure.pdf_
+in the released version.
+
+Model in _dr.evolution_=> Parser in _dr.evoxml_
+Model in _dr.evomodel_=> Parser in _dr.evomodelxml_
+Model in _dr.inference_ => Parser in _dr.inferencexml_
+
+5) Any new parser for the release has to be added in _\src\dr\app\beast
+\release\_parsers.properties_, if you do not want to release it, then it
+should be added in _\src\dr\app\beast\development\_parsers.properties_.
+_BeastParser.java_ is not allowed to add any new parser.

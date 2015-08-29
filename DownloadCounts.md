@@ -1,0 +1,60 @@
+The http://evolve.zoo.ox.ac.uk/beast/ web site has now been closed down and the location for downloads been shifted to this googlecode project.
+# Total Downloads #
+## By platform ##
+| Mac OS X | 3287 |
+|:---------|:-----|
+| Windows  | 4586 |
+| Linux/UNIX | 2228 |
+| Total    | 10101 |
+
+## By milestone versions ##
+| v1.0.3 | 798 |
+|:-------|:----|
+| v1.2   | 802 |
+| v1.3   | 4169 |
+| v1.4   | 1328 |
+
+## Last version: v1.4.1 ##
+| Mac OS X | 547 |
+|:---------|:----|
+| Windows  | 1094 |
+| Linux/UNIX | 256 |
+| Total    | 1897 |
+
+The download counts for the current version (v1.4.2) can be found here: http://code.google.com/p/beast-mcmc/downloads/list - this version was posted on the 1st May 2007
+
+_prior to version 1.1.1, OS X version was the same as the UNIX/Linux_
+
+The raw data:
+```
+18	BEASTv1.0.1.exe
+24	BEASTv1.0.1.tgz
+31	BEASTv1.0.2.exe
+42	BEASTv1.0.2.tgz
+412	BEASTv1.0.3.exe
+386	BEASTv1.0.3.tgz
+10	BEASTv1.0.exe
+83	BEASTv1.0.tgz
+3	BEASTv1.1.1.dmg
+2	BEASTv1.1.1.exe
+2	BEASTv1.1.1.tgz
+52	BEASTv1.1.2.dmg
+47	BEASTv1.1.2.exe
+35	BEASTv1.1.2.tgz
+80	BEASTv1.1.dmg
+71	BEASTv1.1.exe
+69	BEASTv1.1.tgz
+247	BEASTv1.2.dmg
+336	BEASTv1.2.exe
+219	BEASTv1.2.tgz
+1346	BEASTv1.3.dmg
+1955	BEASTv1.3.exe
+868	BEASTv1.3.tgz
+477	BEASTv1.4.dmg
+244	BEASTv1.4.tgz
+610	BEASTv1.4.zip
+547	BEASTv1.4.1.dmg
+256	BEASTv1.4.1.tgz
+1094	BEASTv1.4.1.zip
+```
+

@@ -1,0 +1,86 @@
+A description of the default priors on each parameter of the standard models in BEAUti
+
+# Introduction #
+
+The aim is to provide every parameter with a proper and reasonable prior. This document is to describe our choices and the rationale behind each.
+
+# Parameters #
+
+## Substitution Models ##
+| **Parameter** | **Description** | **Bounds** | **Default Prior** | **Editable in BEAUTi** | **Rationale/Comments** |
+|:--------------|:----------------|:-----------|:------------------|:-----------------------|:-----------------------|
+| `*`.frequencies | base frequencies | 0 <= \pi\_i <= \sum pi\_i = 1 | Uniform / Dirichlet(1,...,1) | Y                      | Dirichlet(1,\ldots,1) is uniform over this hyperplane | In Code                |
+| `*`.kappa     | HKY transition-transversion parameter  | 0,+Inf     | Log-Normal(M=1,S=1.25) | Y                      | Gamma(1/a,a) for a large is relatively uninformative - biological kappa values are greater than 1, but not much greater than 10. This prior is moderately diffuse with a median of 2.718 | In Code                |
+| `*`.kappa1    | TN93 1st transition-transversion parameter  | 0,+Inf     | Log-Normal(M=1,S=1.25) | Y                      | biological kappa values are greater than 1, but not much greater than 10. This prior is moderately diffuse with a median of 2.718 | In Code                |
+| `*`.kappa2    | TN93 2nd transition-transversion parameter  | 0,+Inf     | Log-Normal(M=1,S=1.25) | Y                      | biological kappa values are greater than 1, but not much greater than 10. This prior is moderately diffuse with a median of 2.718 | In Code                |
+| `*`.ac, `*`.at, `*`.cg, `*`.gt | GTR A-C, A-T, C-G, G-T substitution parameters  | 0,+Inf     | Gamma(0.05,10)    | Y                      | If the GTR parameters are scale to C-T (a transition) then these four transversions should have a prior with a mean below 1. This prior is diffuse with a mean of 0.5. _A quote from Marc:_For the GTR, I think a hierarchical prior could be a reasonable way to go.  All rates, rate\_i, draw IID from a common distribution (say, log-Normal) with an estimable mean and variance.  If one type of transition is not  observed, the rate will become the mean of the others.  Hierarchical priors generally provide the most statistically efficient estimators.| In Code                |
+| `*`.ag        | GTR A-G substitution parameter | 0,+Inf     | Gamma(0.05,20)    | Y                      | If the GTR parameters are scaled to C-T (a transition) then the other transition should have a prior with a mean of 1. This prior is moderately diffuse with a mean of 1 | In Code                |
+| hfrequencies  | Binary Covarion frequencies of the hidden rates  | 0 <= \pi\_i <= \sum \pi\_i = 1 | Uniform / Dirichlet(1,1) | Y                      |                        | In Code                |
+| bcov.alpha    | Binary Covarion rate of evolution in slow mode  | 0,1        | Beta              | Y                      |  Beta(1,1) is uniform  | In Code                |
+| bcov.s        | Binary Covarion rate of flipping between slow and fast modes  | 0,+Inf     | Gamma(0.05, 10)   | Y                      | The covarion model is normalized by setting the fast rate to 1.0. If the switching rate is much faster than the fast rate, then the covarion aspect of the model is a bit pointless. I have no good feeling for this, but would suggest a diffuse prior with a mean below 1. | In Code                |
+
+## Site Models ##
+| **Parameter** | **Description** | **Bounds** | **Default Prior** | **Editable in BEAUTi** | **Rationale/Comments** |
+|:--------------|:----------------|:-----------|:------------------|:-----------------------|:-----------------------|
+| `*`.alpha     | Gamma shape parameter | 1E-8,+Inf  | Gamma             | Y                      | The lower bound is to prevent numerical issues with the quantiles for exceptionally low values |
+| `*`.pInv      | proportion of invariant sites parameter | 0,1        | Beta              | Y                      | Beta(1,1) is uniform   |
+| `*`.mu        | relative rate parameter | 0,+Inf     | Gamma             | Y                      |                        |
+
+## Clock Models ##
+| **Parameter** | **Description** | **Bounds** | **Default Prior** | **Editable in BEAUTi** | **Rationale/Comments** |
+|:--------------|:----------------|:-----------|:------------------|:-----------------------|:-----------------------|
+| clock.rate    | Strict clock substitution rate | 0,+Inf     | Gamma             | Y                      |                        |
+| uced.mean     | uncorrelated exponential relaxed clock mean | 0,+Inf     | Gamma             | Y                      |                        |
+| ucld.mean     | uncorrelated lognormal relaxed clock mean | 0,+Inf     | Gamma             | Y                      |                        |
+| ucld.stdev    | uncorrelated lognormal relaxed clock stdev | Exp(mean=0.333) | Gamma             | Y                      |                        |
+| branchRates.var | autocorrelated lognormal relaxed clock rate variance | 0,+Inf     | Gamma             | Y                      |                        |
+| branchRates.categories | relaxed clock branch rate categories | 0,branches | integer           | N                      |                        |
+| `*`.rates     | random local clock rates | 0,+Inf     | Gamma             | N                      |                        |
+| `*`. changes  | random local clock rate change indicator | 0,1        | Integer           | N                      |                        |
+| treeModel.rootRate | autocorrelated lognormal relaxed clock root rate | 0,+Inf     | Gamma             | N                      |                        |
+| treeModel.nodeRates | autocorrelated lognormal relaxed clock non-root rates | 0,+Inf     | Uniform           | N                      |                        |
+
+## Tree Models ##
+
+| **Parameter** | **Description** | **Bounds** | **Default Prior** | **Editable in BEAUTi** | **Rationale/Comments** |
+|:--------------|:----------------|:-----------|:------------------|:-----------------------|:-----------------------|
+| treeModel.rootHeight | root height of the tree | 0,+Inf     | Tree Prior        | Y                      |                        |
+| treeModel.internalNodeHeights | internal node heights of the tree (except the root) | dynamic    | Tree Prior        | N                      |                        |
+
+## Tree Priors ##
+
+| **Parameter** | **Description** | **Bounds** | **Default Prior** | **Editable in BEAUTi** | **Rationale/Comments** |
+|:--------------|:----------------|:-----------|:------------------|:-----------------------|:-----------------------|
+| constant.popSize | coalescent population size parameter | 0,+Inf     | Jeffreys (1/x)    | Y                      |                        | In Code                |
+| exponential.popSize | coalescent population size parameter | 0,+Inf     | Jeffreys (1/x)    | Y                      |                        | In Code                |
+| exponential.growthRate | coalescent growth rate parameter | -Inf,+Inf  |                   | Y                      |                        |
+| exponential.doublingTime | coalescent doubling time parameter | 0,+Inf     |                   | Y                      |                        |
+| logistic.popSize | coalescent population size parameter | 0,+Inf     | Jeffreys (1/x)    | Y                      |                        | In Code                |
+| logistic.growthRate | coalescent logistic growth rate parameter | 0,+Inf     |                   |                        |                        |
+| logistic.doublingTime | coalescent doubling time parameter | 0,+Inf     |                   | Y                      |                        |
+| logistic.t50  | logistic shape parameter | 0,+Inf     |                   | Y                      |                        |
+| expansion.popSize | coalescent population size parameter | 0,+Inf     | Jeffreys (1/x)    | Y                      |                        | In Code                |
+| expansion.growthRate | coalescent logistic growth rate parameter | 0,+Inf     |                   | Y                      |                        |
+| expansion.doublingTime | coalescent doubling time parameter | 0,+Inf     |                   | Y                      |                        |
+| expansion.ancestralProportion | ancestral population proportion | 0,1        |                   | Y                      |                        |
+| skyline.popSize | Bayesian Skyline population sizes | 0,+Inf     | Exponential Markov | Y                      |                        |
+| skyline.groupSize | Bayesian Skyline group sizes | 1,node count | Integer           | Y                      |                        |
+| skyride.logPopSize | GMRF Bayesian skyride population sizes | -Inf,+Inf  | GMRF              | N                      | skyride.logPopSize is log unit unlike other popSize | In Code                |
+| skyride.precision | GMRF Bayesian skyride precision | 0,+Inf     | Gamma             | Y                      |                        | In Code                |
+| demographic.popSize | Extended Bayesian Skyline population sizes | 0,+Inf     |                   | N                      |                        |
+| demographic.indicators | Extended Bayesian Skyline population switch | 1,node count | Integer           | N                      |                        |
+| demographic.populationMean | Extended Bayesian Skyline population prior mean | 0,+Inf     | Jeffreys (1/x)    | Y                      |                        | In Code                |
+| demographic.populationSizeChanges | Average number of population change points | 0,x        | Poisson           | Y                      |                        |
+| yule.birthRate | Yule speciation process birth rate | 0,+Inf     |                   | Y                      |                        |
+| birthDeath.meanGrowthRate | Birth-Death speciation process rate | 0,+Inf     |                   | Y                      |                        |
+| birthDeath.relativeDeath | Death/Birth speciation process relative death rate | 0,+Inf     |                   | Y                      |                        |
+
+## Star BEAST ##
+
+| **Parameter** | **Description** | **Bounds** | **Default Prior** | **Editable in BEAUTi** | **Rationale/Comments** |
+|:--------------|:----------------|:-----------|:------------------|:-----------------------|:-----------------------|
+| species.popMean |  Hype-prior on population sizes  | 0,+Inf     | Jeffreys (1/x)    | Y                      |                        |
+| species.yule.birthRate | Tree birth rate | 0,+Inf     | Jeffreys (1/x)    | Y                      |                        |
+| species.birthDeath.meanGrowthRate | Tree mean growth rate (birth-death) | 0,+Inf     | Jeffreys (1/x)    | Y                      |                        |
+| species.birthDeath.relativeDeathRate | Tree relative death rate (death/birth) | [0,1]      | uniform on [0,1]  | Y                      |                        |
+| speciesTree.splitPopSize | species tree population sizes | 0,+Inf     | Gamma(2, species.popMean) for internal, Gamma(4, species.popMean) for tips | N                      |                        |
